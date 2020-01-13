@@ -19,7 +19,7 @@ $ npm install -g collapse-yarn-lockfile
 $ collapse-yarn-lockfile COMMAND
 running command...
 $ collapse-yarn-lockfile (-v|--version|version)
-collapse-yarn-lockfile/0.1.0 darwin-x64 node-v10.15.1
+collapse-yarn-lockfile/0.1.1 darwin-x64 node-v10.15.1
 $ collapse-yarn-lockfile --help [COMMAND]
 USAGE
   $ collapse-yarn-lockfile COMMAND
