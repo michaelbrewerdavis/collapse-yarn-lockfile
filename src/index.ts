@@ -23,14 +23,13 @@ class CollapseLockfile extends Command {
     version: flags.version(),
     help: flags.help({char: 'h'}),
     verbose: flags.boolean({char: 'v'}),
-    downgrade: flags.boolean({char: 'd', description: 'Allow resolutions to be downgraded to a pre-existing resolution', default: false}),
+    allowDowngrade: flags.boolean({char: 'd', description: 'Allow resolutions to be downgraded to a pre-existing resolution', default: false}),
+    packageFilter: flags.string({char: 'f', description: 'Regex filter for packages to be modified'}),
   }
 
   static args = [{name: 'file'}]
 
   isVerbose = false
-
-  allowDowngrade = false
 
   verbose(...args: any[]) {
     if (this.isVerbose) {
@@ -41,7 +40,6 @@ class CollapseLockfile extends Command {
   async run() {
     const {args, flags} = this.parse(CollapseLockfile)
     this.isVerbose = flags.verbose
-    this.allowDowngrade = flags.downgrade
 
     const filename = args.file
     const file = fs.readFileSync(filename, 'utf8')
@@ -62,6 +60,9 @@ class CollapseLockfile extends Command {
     })
 
     Object.keys(packages).forEach(pkg => {
+      if (flags.packageFilter && !pkg.match(flags.packageFilter)) {
+        return
+      }
       const versions = packages[pkg]
       this.verbose('visiting', pkg, Object.keys(versions).join(','))
       Object.keys(versions).sort((a, b) => semver.compare(a, b)).forEach(version => {
@@ -80,7 +81,7 @@ class CollapseLockfile extends Command {
             semver.satisfies(otherVersion, constraint))
           this.verbose('  satisfies', otherVersionSatisfies, version, otherVersion)
 
-          if (otherVersionSatisfies && (this.allowDowngrade || semver.lt(version, otherVersion))) {
+          if (otherVersionSatisfies && (flags.allowDowngrade || semver.lt(version, otherVersion))) {
             this.verbose('  replacing', pkg, version, 'with', otherVersion)
             versions[otherVersion].constraints.push(...constraints)
             delete versions[version]
@@ -99,8 +100,6 @@ class CollapseLockfile extends Command {
         })
       })
     })
-    // this.log(JSON.stringify(packages, null, ' '))
-    // this.log(JSON.stringify(newJson, null, ' '))
     this.log(lockfile.stringify(newJson))
   }
 }

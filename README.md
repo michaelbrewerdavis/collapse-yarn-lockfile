@@ -23,8 +23,9 @@ USAGE
   $ collapse-yarn-lockfile [FILE]
 
 OPTIONS
-  -d, --downgrade  Allow resolutions to be downgraded to a pre-existing resolution
-  -h, --help       show CLI help
+  -d, --allowDowngrade               Allow resolutions to be downgraded to a pre-existing resolution
+  -f, --packageFilter=packageFilter  Regex filter for packages to be modified
+  -h, --help                         show CLI help
   -v, --verbose
-  --version        show CLI version
+  --version                          show CLI version
 ```
