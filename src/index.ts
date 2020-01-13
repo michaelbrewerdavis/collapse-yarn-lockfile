@@ -23,11 +23,14 @@ class CollapseLockfile extends Command {
     version: flags.version(),
     help: flags.help({char: 'h'}),
     verbose: flags.boolean({char: 'v'}),
+    downgrade: flags.boolean({char: 'd', description: 'Allow resolutions to be downgraded to a pre-existing resolution', default: false}),
   }
 
   static args = [{name: 'file'}]
 
-  isVerbose = true
+  isVerbose = false
+
+  allowDowngrade = false
 
   verbose(...args: any[]) {
     if (this.isVerbose) {
@@ -38,6 +41,7 @@ class CollapseLockfile extends Command {
   async run() {
     const {args, flags} = this.parse(CollapseLockfile)
     this.isVerbose = flags.verbose
+    this.allowDowngrade = flags.downgrade
 
     const filename = args.file
     const file = fs.readFileSync(filename, 'utf8')
@@ -76,7 +80,7 @@ class CollapseLockfile extends Command {
             semver.satisfies(otherVersion, constraint))
           this.verbose('  satisfies', otherVersionSatisfies, version, otherVersion)
 
-          if (otherVersionSatisfies && semver.lt(version, otherVersion)) {
+          if (otherVersionSatisfies && (this.allowDowngrade || semver.lt(version, otherVersion))) {
             this.verbose('  replacing', pkg, version, 'with', otherVersion)
             versions[otherVersion].constraints.push(...constraints)
             delete versions[version]
