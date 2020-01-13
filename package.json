@@ -1,7 +1,7 @@
 {
   "name": "collapse-yarn-lockfile",
   "description": "Collapse yarn.lock dependencies",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "Michael Brewer-Davis @michaelbrewerdavis",
   "bin": {
     "collapse-yarn-lockfile": "./bin/run"
