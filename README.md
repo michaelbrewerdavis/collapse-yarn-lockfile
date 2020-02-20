@@ -14,7 +14,7 @@ a new lockfile which uses that dependency.
 # Usage
 ```sh-session
 QUICK START
-  $ npx collapse-yarn-lockfile yarn.lock > yarn.lock
+  $ npx collapse-yarn-lockfile yarn.lock
 
   # remove orphaned dependencies
   $ yarn
@@ -26,6 +26,7 @@ OPTIONS
   -d, --allowDowngrade               Allow resolutions to be downgraded to a pre-existing resolution
   -f, --packageFilter=packageFilter  Regex filter for packages to be modified
   -h, --help                         show CLI help
+  -i, --interactive                  Prompt for each collapsed library
   -v, --verbose
   --version                          show CLI version
 ```
